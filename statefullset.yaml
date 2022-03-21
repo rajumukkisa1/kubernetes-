@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: busybox1
+  labels:
+    app: busybox1
+spec:
+  serviceName: busybox1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox1
+      openebs.io/replica-anti-affinity: busybox1
+  template:
+    metadata:
+      labels:
+        app: busybox1
+        openebs.io/replica-anti-affinity: busybox1
+    spec:
+      terminationGracePeriodSeconds: 1800
+      containers:
+      - name: busybox1
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        command:
+          - sleep
+          - infinity
+        volumeMounts:
+        - name: busybox1
+          mountPath: /busybox1
+  volumeClaimTemplates:
+  - metadata:
+      name: busybox1
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: openebs-cstor-pool-sts
+      resources:
+        requests:
+          storage: 2Gi
