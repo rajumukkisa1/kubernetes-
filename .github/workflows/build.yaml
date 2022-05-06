@@ -2,19 +2,22 @@ name: Build
 on:
   push:
     branches:
-      - master
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - master # or the name of your main branch
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+          fetch-depth: 0
+      - uses: sonarsource/sonarqube-scan-action@master
         env:
-          GITHUB_TOKEN: ${{ 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  }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ 212d1647002f26082530b098a2512f38581cc82c  }}
+          SONAR_TOKEN: ${{ secrets.53846533b5174220722d653b7557de01d690fe3b }}
+          SONAR_HOST_URL: ${{ secrets.localhost:9000 }}
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ 53846533b5174220722d653b7557de01d690fe3b }}
